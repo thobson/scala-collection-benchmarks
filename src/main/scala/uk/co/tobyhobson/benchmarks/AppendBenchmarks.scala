@@ -38,9 +38,9 @@ import scala.collection.immutable.{Queue, Stack}
 @Fork(5)
 class AppendBenchmarks {
 
-    val ListSize = 1000
-    val classUnderTest = new AppendOps()
-    val Elements: List[Int] = (0 until ListSize).toList
+    private val ListSize = 1000
+    private val classUnderTest = new AppendOps()
+    private val Elements: List[Int] = (0 until ListSize).toList
 
     @Benchmark
     def appendToArray(): Array[Int] = {

@@ -25,7 +25,7 @@
 package uk.co.tobyhobson.benchmarks
 
 import org.openjdk.jmh.annotations._
-import uk.co.tobyhobson.fixtures.LinearAccessOps
+import uk.co.tobyhobson.fixtures.RandomAccessOps
 
 import scala.collection.immutable.{Queue, Stack}
 import scala.collection.mutable
@@ -35,10 +35,10 @@ import scala.collection.mutable
 @Warmup(iterations = 10)
 @Measurement(iterations = 10)
 @Fork(5)
-class LinearAccessBenchmarks {
+class RandomAccessBenchmarks {
 
     private val ListSize = 1000
-    private val classUnderTest = new LinearAccessOps()
+    private val classUnderTest = new RandomAccessOps()
 
     private val ImmutableList: List[Int] = (0 until ListSize).toList
     private val MutableList = mutable.MutableList(ImmutableList: _*)
@@ -47,84 +47,36 @@ class LinearAccessBenchmarks {
     private val ImmutableQueue = Queue(ImmutableList: _*)
     private val MutableQueue = mutable.Queue(ImmutableList: _*)
     private val MutableListBuffer = mutable.ListBuffer(ImmutableList: _*)
-    private val MutableArrayBuilder = {
-        val builder: mutable.ArrayBuilder[Int] = mutable.ArrayBuilder.make()
-        for (element <- ImmutableList)
-            builder += element
-        builder
-    }
     private val MutableArrayBuffer = mutable.ArrayBuffer(ImmutableList: _*)
     private val MutableArray = Array(ImmutableList: _*)
-    private val Expected: Int = ImmutableList.sum
+
+    val Expected: Int = ImmutableList.sum
 
     @Benchmark
-    def iterateList(): Int = {
-        val actual = classUnderTest.sum(ImmutableList)
-        assert(actual == Expected)
-        actual
-    }
+    def accessMutableList(): Int = classUnderTest.get(MutableList)
 
     @Benchmark
-    def iterateVector(): Int = {
-        val actual = classUnderTest.sum(ImmutableVector)
-        assert(actual == Expected)
-        actual
-    }
+    def accessList(): Int = classUnderTest.get(ImmutableList)
 
     @Benchmark
-    def iterateStack(): Int = {
-        val actual = classUnderTest.sum(ImmutableStack)
-        assert(actual == Expected)
-        actual
-    }
+    def accessVector(): Int = classUnderTest.get(ImmutableVector)
 
     @Benchmark
-    def iterateQueue(): Int = {
-        val actual = classUnderTest.sum(ImmutableQueue)
-        assert(actual == Expected)
-        actual
-    }
+    def accessStack(): Int = classUnderTest.get(ImmutableStack)
 
     @Benchmark
-    def iterateMutableList(): Int = {
-        val actual = classUnderTest.sum(MutableList)
-        assert(actual == Expected)
-        actual
-    }
+    def accessQueue(): Int = classUnderTest.get(ImmutableQueue)
 
     @Benchmark
-    def iterateListBuffer(): Int = {
-        val actual = classUnderTest.sum(MutableListBuffer)
-        assert(actual == Expected)
-        actual
-    }
+    def accessListBuffer(): Int = classUnderTest.get(MutableListBuffer)
 
     @Benchmark
-    def iterateMutableQueue(): Int = {
-        val actual = classUnderTest.sum(MutableQueue)
-        assert(actual == Expected)
-        actual
-    }
+    def accessMutableQueue(): Int = classUnderTest.get(MutableQueue)
 
     @Benchmark
-    def iterateArrayBuffer(): Int = {
-        val actual = classUnderTest.sum(MutableArrayBuffer)
-        assert(actual == Expected)
-        actual
-    }
+    def accessArrayBuffer(): Int = classUnderTest.get(MutableArrayBuffer)
 
     @Benchmark
-    def iterateArrayBuilder(): Int = {
-        val actual = classUnderTest.sum(MutableArrayBuilder)
-        assert(actual == Expected)
-        actual
-    }
-
-    @Benchmark
-    def iterateArray(): Int = {
-        val actual = classUnderTest.sum(MutableArray)
-        assert(actual == Expected)
-        actual
-    }
+    def accessArray(): Int = classUnderTest.get(MutableArray)
 
 }
